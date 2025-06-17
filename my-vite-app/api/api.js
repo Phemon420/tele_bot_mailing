@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const API_BASE_URL = "http://localhost:8000/"
+const API_BASE_URL = import.meta.env.VITE_REACT_BACKEND_URL || "http://127.0.0.1:8000/"
 
 // Create axios instances
 export const publicAPI = axios.create({
@@ -16,6 +16,7 @@ export const authAPI = axios.create({
     "Content-Type": "application/json",
   },
 })
+
 
 export const protectedAPI = axios.create({
   baseURL: API_BASE_URL,

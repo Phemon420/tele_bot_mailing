@@ -6,9 +6,9 @@ import Login from "./pages/Login"
 import Register from "./pages/Register"
 import Dashboard from "./pages/Dashboard"
 import Profile from "./pages/Profile"
-import Tasks from "./pages/Tasks"
 import ProtectedRoute from "./components/ProtectedRoute"
 import Features from "./pages/tasks_completed"
+import TelegramUsersTable from "./pages/user_list"
 
 function App() {
   return (
@@ -37,10 +37,10 @@ function App() {
               }
             />
             <Route
-              path="/tasks"
+              path="/telegram_user_list"
               element={
                 <ProtectedRoute>
-                  <Tasks />
+                  <TelegramUsersTable />
                 </ProtectedRoute>
               }
             />

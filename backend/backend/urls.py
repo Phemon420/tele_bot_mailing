@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf.urls.static import static
 from django.conf import settings
-from myapp.views import register_user,login_user,telegram_webhook
+from myapp.views import register_user,login_user,telegram_webhook,fetch_all_telegram_users,fetch_profile_by_email
 
 
 urlpatterns = [
@@ -26,4 +26,6 @@ urlpatterns = [
     path('register/', register_user, name="register"),
     path('login/', login_user, name="login"),
     path('webhook/', telegram_webhook, name="telegram_webhook"),
+    path('fetch-telegram-users/', fetch_all_telegram_users, name="fetch_telegram_users"),
+    path('profile/', fetch_profile_by_email, name="fetch_profile_by_email"),
 ]

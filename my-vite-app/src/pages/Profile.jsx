@@ -5,6 +5,7 @@ import { useAuth } from "../contexts/AuthContext"
 import { protectedAPI } from "../../api/api"
 import toast from "react-hot-toast"
 import { User, Mail, Calendar, MessageCircle } from "lucide-react"
+import Cookies from "js-cookie"
 
 const Profile = () => {
   const { user } = useAuth()
@@ -15,16 +16,20 @@ const Profile = () => {
     telegram_username: "",
   })
 
-  useEffect(() => {
+
+useEffect(() => {
+  const userCookie = Cookies.get("jwt_user")
+
+  if (userCookie) {
     const fetchProfile = async () => {
       try {
-        const response = await protectedAPI.get("/profile/")
-        setProfile(response.data)
-        setFormData({
-          telegram_username: response.data.telegram_username || "",
+        const response = await protectedAPI.post("/profile/", {
+          email: userCookie, // clean extra quotes just in case
         })
-      } catch (error) {
-        console.error("Error fetching profile:", error)
+        //console.log("Profile response:", response.data)
+        setProfile(response.data.profile)  // adjust based on your API structure
+      } catch (err) {
+        console.error("Failed to fetch profile by email", err)
         toast.error("Failed to load profile")
       } finally {
         setLoading(false)
@@ -32,7 +37,12 @@ const Profile = () => {
     }
 
     fetchProfile()
-  }, [])
+  } else {
+    setLoading(false)
+  }
+}, [])
+
+
 
   const handleChange = (e) => {
     setFormData({
@@ -46,7 +56,7 @@ const Profile = () => {
     setUpdating(true)
 
     try {
-      const response = await protectedAPI.put("/profile/", formData)
+      const response = await protectedAPI.get("/profile/", formData)
       setProfile(response.data)
       toast.success("Profile updated successfully!")
     } catch (error) {
@@ -81,7 +91,7 @@ const Profile = () => {
             <User className="text-gray-400" size={20} />
             <div>
               <p className="text-sm text-gray-600">Username</p>
-              <p className="font-medium">{profile?.user.username}</p>
+              <p className="font-medium">{profile.full_name}</p>
             </div>
           </div>
 
@@ -89,17 +99,7 @@ const Profile = () => {
             <Mail className="text-gray-400" size={20} />
             <div>
               <p className="text-sm text-gray-600">Email</p>
-              <p className="font-medium">{profile?.user.email}</p>
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-3">
-            <User className="text-gray-400" size={20} />
-            <div>
-              <p className="text-sm text-gray-600">Full Name</p>
-              <p className="font-medium">
-                {profile?.user.first_name} {profile?.user.last_name}
-              </p>
+              <p className="font-medium">{profile.email}</p>
             </div>
           </div>
 
@@ -107,41 +107,12 @@ const Profile = () => {
             <Calendar className="text-gray-400" size={20} />
             <div>
               <p className="text-sm text-gray-600">Member Since</p>
-              <p className="font-medium">{new Date(profile?.user.date_joined).toLocaleDateString()}</p>
+              <p className="font-medium">{new Date(profile.date_joined).toLocaleDateString()}</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Telegram Integration */}
-      <div className="card">
-        <h2 className="text-xl font-bold mb-4 flex items-center">
-          <MessageCircle className="mr-2" size={24} />
-          Telegram Integration
-        </h2>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="telegram_username" className="block text-sm font-medium text-gray-700 mb-1">
-              Telegram Username
-            </label>
-            <input
-              type="text"
-              id="telegram_username"
-              name="telegram_username"
-              value={formData.telegram_username}
-              onChange={handleChange}
-              placeholder="@your_telegram_username"
-              className="input-field"
-            />
-            <p className="text-sm text-gray-500 mt-1">Enter your Telegram username to connect with our bot</p>
-          </div>
-
-          <button type="submit" disabled={updating} className="btn-primary disabled:opacity-50">
-            {updating ? "Updating..." : "Update Profile"}
-          </button>
-        </form>
-      </div>
 
       {/* Telegram Bot Instructions */}
       <div className="card bg-blue-50 border-blue-200">
@@ -151,28 +122,19 @@ const Profile = () => {
           <p>To connect with our Telegram bot, follow these steps:</p>
           <ol className="list-decimal list-inside space-y-2">
             <li>
-              Search for our bot on Telegram: <code className="bg-blue-100 px-2 py-1 rounded">@YourBotName</code>
+              Search for our bot on Telegram: <code className="bg-blue-100 px-2 py-1 rounded">@lol3466_bot</code>
             </li>
             <li>
               Send the <code className="bg-blue-100 px-2 py-1 rounded">/start</code> command
             </li>
             <li>Update your Telegram username in the form above</li>
-            <li>
-              Use <code className="bg-blue-100 px-2 py-1 rounded">/profile</code> to view your bot profile
-            </li>
           </ol>
 
           <div className="mt-4 p-3 bg-blue-100 rounded-lg">
             <p className="font-medium">Available Bot Commands:</p>
             <ul className="mt-2 space-y-1">
               <li>
-                <code>/start</code> - Register with the bot
-              </li>
-              <li>
-                <code>/profile</code> - View your profile
-              </li>
-              <li>
-                <code>/help</code> - Get help and information
+                <code>/start</code> - Collects username with the bot
               </li>
             </ul>
           </div>

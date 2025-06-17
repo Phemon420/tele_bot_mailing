@@ -35,8 +35,8 @@ const Navbar = () => {
                 <Link to="/dashboard" className="text-gray-700 hover:text-primary-600">
                   Dashboard
                 </Link>
-                <Link to="/tasks" className="text-gray-700 hover:text-primary-600">
-                  Tasks
+                <Link to="/telegram_user_list" className="text-gray-700 hover:text-primary-600">
+                  Telegram username list
                 </Link>
                 <Link to="/profile" className="text-gray-700 hover:text-primary-600">
                   Profile

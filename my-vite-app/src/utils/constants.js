@@ -1,9 +1,9 @@
 export const API_ENDPOINTS = {
-  PUBLIC_INFO: "/public/",
+  // PUBLIC_INFO: "/public/",
   LOGIN: "/login/",
   REGISTER: "/register/",
   PROFILE: "/profile/",
-  TASKS: "/tasks/",
+  // TASKS: "/tasks/",
 }
 
 export const TASK_STATUS = {

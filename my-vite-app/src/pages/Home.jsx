@@ -10,19 +10,6 @@ const Home = () => {
   // const { isAuthenticated } = useAuth()
   const [publicInfo, setPublicInfo] = useState(null)
 
-  useEffect(() => {
-    const fetchPublicInfo = async () => {
-      try {
-        const response = await publicAPI.get("/public/")
-        setPublicInfo(response.data)
-      } catch (error) {
-        console.error("Error fetching public info:", error)
-      }
-    }
-
-    fetchPublicInfo()
-  }, [])
-
   return (
     <div className="max-w-4xl mx-auto">
       {/* Hero Section */}
@@ -82,18 +69,6 @@ const Home = () => {
             <div>
               <h3 className="text-lg font-semibold mb-2">Message</h3>
               <p className="text-gray-600">{publicInfo.message}</p>
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold mb-2">Available Endpoints</h3>
-            <div className="grid md:grid-cols-2 gap-2">
-              {Object.entries(publicInfo.endpoints).map(([name, endpoint]) => (
-                <div key={name} className="flex justify-between py-1">
-                  <span className="font-medium">{name}:</span>
-                  <code className="text-sm bg-gray-100 px-2 py-1 rounded">{endpoint}</code>
-                </div>
-              ))}
             </div>
           </div>
         </div>

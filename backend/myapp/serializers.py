@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model,authenticate
 from .controller import create_user
-from .models import TelegramUserName
+from .models import TelegramUserName,User
 
 class RegisterSerializer(serializers.ModelSerializer):
     password=serializers.CharField(write_only=True)
@@ -53,3 +53,25 @@ class TelegramUserNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = TelegramUserName
         fields = ['message_id', 'username']
+
+
+# New Profile Serializer for better data structure
+class ProfileSerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = User
+        fields = [
+            'id', 'email', 'first_name', 'last_name', 'full_name',
+            'date_joined', 'is_active'
+        ]
+        read_only_fields = ['id', 'date_joined']
+    
+    def get_full_name(self, obj):
+        return obj.get_full_name().strip()
+
+# Serializer for telegram users list
+class TelegramUserListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TelegramUserName
+        fields = ['id', 'message_id', 'username']

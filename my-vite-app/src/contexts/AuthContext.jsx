@@ -19,56 +19,34 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(Cookies.get("jwt_token") || null)
   const [loading, setLoading] = useState(true)
 
-  // useEffect(() => {
-  //   if (token) {
-  //     // Set token in API headers
-  //     authAPI.defaults.headers.common["Authorization"] = `Token ${token}`
-  //     // You could also fetch user profile here
-  //   }
-  //   setLoading(false)
-  // }, [token])
-
-
-useEffect(() => {
-  const jwt = Cookies.get("jwt_token")
+  useEffect(() => {
+    const jwt = Cookies.get("jwt_token");
+    const storedUser = Cookies.get("jwt_user");
 
   if (jwt) {
-    // Set token in API headers as Bearer token
-    authAPI.defaults.headers.common["Authorization"] = `Bearer ${jwt}`
-    setToken(jwt)
-    // Optionally: fetch user profile
+    authAPI.defaults.headers.common["Authorization"] = `Bearer ${jwt}`;
+    setToken(jwt);
   }
 
-  setLoading(false)
-}, [])
+  if (storedUser) {
+    try {
+      setUser(JSON.parse(storedUser));
+    } catch {
+      setUser(null); // fallback if corrupted
+    }
+  }
 
-
-  // const login = async (credentials) => {
-  //   try {
-  //     //console.log("Logging in with credentials:", credentials)
-  //     const response = await authAPI.post("/login/", credentials)
-  //     const { user, token: newToken } = response.data
-
-  //     setUser(user)
-  //     setToken(newToken)
-  //     localStorage.setItem("token", newToken)
-  //     authAPI.defaults.headers.common["Authorization"] = `Token ${newToken}`
-
-  //     return { success: true, user }
-  //   } catch (error) {
-  //     return {
-  //       success: false,
-  //       error: error.response?.data?.error || "Login failed",
-  //     }
-  //   }
-  // }
-
+  window.ReactUser = user;
+  setLoading(false);
+}, []);
 
 
 const login = async (credentials) => {
   try {
     const response = await authAPI.post("/login/", credentials)
     const { user, token: newToken } = response.data
+    
+    //console.log("Login response:", response)
 
     setUser(user)
     setToken(newToken)
@@ -79,6 +57,11 @@ const login = async (credentials) => {
       secure: false,      // Set to true in production (HTTPS only)
       sameSite: 'Lax',    // Helps with CSRF protection
     })
+    Cookies.set("jwt_user", JSON.stringify(user), {
+  expires: 7,
+  secure: false,
+  sameSite: "Lax",
+    });
 
     // Optional: set default auth header for future requests
     authAPI.defaults.headers.common["Authorization"] = `Bearer ${newToken}`
@@ -122,6 +105,7 @@ const login = async (credentials) => {
     setUser(null)
     setToken(null)
     Cookies.remove("jwt_token")
+    Cookies.remove("jwt_user")
     delete authAPI.defaults.headers.common["Authorization"]
   }
 

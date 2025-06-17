@@ -1,8 +1,13 @@
 import os
 import requests
+from dotenv import load_dotenv
+from pathlib import Path
 
-BOT_TOKEN = "7721218003:AAE84U0xxgHWKUro0As_OqtQBez0bJxkmW4"
-WEBHOOK_URL = "https://warrior-periods-tunes-downloadable.trycloudflare.com/webhook/"
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+
+BOT_TOKEN = os.getenv("BOT_TOKEN", "7721218003:AAE84U0xxgHWKUro0As_OqtQBez0bJxkmW4")
+WEBHOOK_URL = os.getenv("WEBHOOK_URL", "https://warrior-periods-tunes-downloadable.trycloudflare.com/webhook/")
 MARKER_FILE = ".telegram_webhook_set"
 
 def set_webhook():
