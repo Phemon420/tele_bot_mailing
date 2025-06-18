@@ -209,6 +209,50 @@ Create a `.env` file in the `my-vite-app` directory with these feilds:
 VITE_REACT_BACKEND_URL=your_backend_url
 ```
 
+## 📡 API Endpoints
+
+Below is a list of the available API routes for this project:
+
+### 🔐 Authentication
+
+- **POST `/login/`**  
+  Logs in a user using email/username and password.  
+  **Request:** `{ "username": "user", "password": "pass" }`  
+  **Response:** Authentication token and user data.
+
+- **POST `/register/`**  
+  Registers a new user.  
+  **Request:** `{ "username": "user", "email": "email@example.com", "password": "pass" , "first_name":"first_name", "last_name":"last_name" }`  
+  **Response:** User profile info.
+
+### 👤 User
+
+- **GET `/profile/`**  
+  Returns the authenticated user's profile data based on email.  
+  **Headers:** `Authorization: Token <jwt_user>`
+
+### 📊 Dashboard
+
+- **GET `/dashboard/`**  
+  Contains an interactive "Path Finder" game.  
+  - Allows users to create and customize obstacles.
+  - Useful for testing and visual demos.
+
+### 🚪 Unprotected Route
+
+- **GET `/unprotect/`**  
+  A public route that does not require authentication.  
+  - Typically used to demonstrate or test unauthenticated access.
+
+### 🤖 Telegram Bot
+
+- **GET `/telegram_user_list/`**  
+  Returns a list of all users saved via the Telegram bot into the backend database.  
+  - Useful for verifying bot integration.
+
+---
+
+
 
 ## 🤝 Contributing
 
